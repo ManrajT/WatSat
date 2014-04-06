@@ -16,6 +16,17 @@ void setup() {
 
 void loop() {
   Serial.println((value>>n) & 1
+  
+  // checks for if anything needs to be done 
+  if (Serial.available() > 0){
+    request_status = Serial.read();
+    if (request_status == 1111){
+      // TODO: get sensor data
+    }else if (request_status == 0000){
+      // TODO: activate actuators
+    }
+  }
+
 }
 
 
