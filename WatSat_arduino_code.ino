@@ -1,4 +1,6 @@
 //All code is using variables, which can change
+//Figure out how data for magnetometers have to be handled (photodiodes and temp are just default
+
 
 int inputNum = 0;  //value from 0 to 15, telling which line on the MUX to select and in this form to easily convert to binary that's need for control lines 
 
