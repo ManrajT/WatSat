@@ -1,14 +1,18 @@
+/*
+high pwm means low voltage
+low pwm means high voltage
+*/
+
 //All code is using variables, which can change
 //Figure out how data for magnetometers have to be handled (photodiodes and temp are just default
 
 
 int select = 1;  //value from 0 to 15, telling which line on the MUX to select and in this form to easily convert to binary that's need for control lines 
 
-
-int control0 = 0;
-int control1 = 1;
-int control2 = 2;
-int control3 = 3;
+int control0 = 2;
+int control1 = 3;
+int control2 = 4;
+int control3 = 5;
 
 void setup() {
   Serial.begin(9600);
@@ -18,19 +22,12 @@ void setup() {
   pinMode(control2, OUTPUT); 
   pinMode(control3, OUTPUT); 
   
-  
-  Serial.println("hello"); 
-  
 }
 
 void loop() {
+/*
   for(int i=1; i<16; i++){
     Serial.println(i);
-    /*
-    String stringRep = String(i); 
-    Serial.println(stringRep[0]);
-    delay(100);  
-    */
     selectLine(i); 
     Serial.print(digitalRead(control3)); 
     Serial.print(digitalRead(control2)); 
@@ -38,6 +35,17 @@ void loop() {
     Serial.print(digitalRead(control0)); 
     Serial.println(); 
     delay(1000);  
+  }
+*/
+  if (Serial.available() <= 0){
+    Serial.print('serial unavailable');
+  }
+  
+  char in;
+  while (Serial.available() > 0){
+    in = Serial.read();
+    Serial.print(in);
+    delay(100);
   }
   
   /*
