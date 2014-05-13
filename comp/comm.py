@@ -1,20 +1,28 @@
 #! /usr/bin/env/python2
-# NOTE: didn't actually test the code... :(
 
 import serial
+from time import sleep
 
-port = None             # the port the arduino is located 
-baud_rate =  None       # the baud rate of the arduino
+port = '/dev/ttyACM0'     # the port the arduino is located 
+baud_rate =  9600     # the baud rate of the arduino
 
 class RequestError(Exception): pass
 
 def main():
-    arduino = serial.Serial(port, baud_rate)
+    counter = 32
+    arduino = serial.Serial()
+    arduino.port = port
+    arduino.baudrate = 9600
+    arduino.open()
+
     while True:
-        dat = get_sensor_data(arduino)          # Get data
-        pos = determine_attitude(dat)           # Process data
-        chng = determine_adjustment(pos)        # Math...
-        post_change(arduino, chng)              # Tells arduino the change
+        counter += 1
+        arduino.write(str(chr('g')))
+        print "output from serial for %s: "%(counter)
+        print arduino.read()
+        sleep(1)
+        if counter == 255:
+            counter = 32
 
 def _prep_request(typ):
     # tells the arduino when we want to send/recieve data so that the 
@@ -41,22 +49,6 @@ def get_sensor_data(con):
     _prep_request('get')
     data = con.readline()
     return data
-
-def determine_attitude(dat):
-    # determines satellite attitude
-    #   param : dat : dict, the positional information from sensors
-    #   return : tuple, the position of the satellite relative to? 
-    # TODO: modified b-dot algorithm?
-    att = (None, None, None)
-    return att
-
-def determine_adjustment(pos):
-    # determines how much the satellite needs to move to get to desired pos
-    #   param : pos : tuple for the x, y, z pos
-    #   return : tuple, the change needed to get to the desired postition
-    # TODO: math to determine position -> vector projection?
-    chng = (None, None, None)
-    return chng
 
 def post_change(con, dat):
     # posts needed change to the arduino

@@ -13,6 +13,8 @@ int control0 = 2;
 int control1 = 3;
 int control2 = 4;
 int control3 = 5;
+char req;
+boolean requestData;
 
 void setup() {
   Serial.begin(9600);
@@ -22,6 +24,18 @@ void setup() {
   pinMode(control2, OUTPUT); 
   pinMode(control3, OUTPUT); 
   
+  Serial.println("Started serial");
+  
+}
+
+void listenForRequest(){
+  req = Serial.read();
+  
+  if (req){
+    Serial.println(req); 
+  }else{
+    Serial.println("No Data Recieved");
+  }
 }
 
 void loop() {
@@ -37,30 +51,11 @@ void loop() {
     delay(1000);  
   }
 */
-  if (Serial.available() <= 0){
-    Serial.print('serial unavailable');
-  }
   
-  char in;
   while (Serial.available() > 0){
-    in = Serial.read();
-    Serial.print(in);
-    delay(100);
+    listenForRequest();
   }
   
-  /*
-  Serial.println((value>>n) & 1
-  
-  // checks for if anything needs to be done 
-  if (Serial.available() > 0){
-    request_status = Serial.read();
-    if (request_status == 1111){
-      // TODO: get sensor data
-    }else if (request_status == 0000){
-      // TODO: activate actuators
-    }
-  }
-  */
 }
 
 
