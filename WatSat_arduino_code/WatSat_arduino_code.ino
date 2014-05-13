@@ -1,14 +1,20 @@
+/*
+high pwm means low voltage
+low pwm means high voltage
+*/
+
 //All code is using variables, which can change
 //Figure out how data for magnetometers have to be handled (photodiodes and temp are just default
 
 
 int select = 1;  //value from 0 to 15, telling which line on the MUX to select and in this form to easily convert to binary that's need for control lines 
 
-
-int control0 = 0;
-int control1 = 1;
-int control2 = 2;
-int control3 = 3;
+int control0 = 2;
+int control1 = 3;
+int control2 = 4;
+int control3 = 5;
+char req;
+boolean requestData;
 
 void setup() {
   Serial.begin(9600);
@@ -18,19 +24,45 @@ void setup() {
   pinMode(control2, OUTPUT); 
   pinMode(control3, OUTPUT); 
   
-  
-  Serial.println("hello"); 
+  Serial.println("Started serial");
   
 }
 
+void listenForRequest(){
+  req = Serial.read();
+  
+  if (req == 'g'){
+    getRequest();
+  }else if (req == 'p'){
+    postRequest();
+  }else{
+    Serial.println(req);
+    Serial.println("No Data Recieved");
+  }
+}
+
+void postRequest(){
+  /*
+  What to do when a "post" request is sent.
+  For example, will post the voltage required to apply to magentorquers
+  */
+  delay(1120);
+  Serial.println("This is a post request");
+}
+
+void getRequest(){
+  /*
+  What to do when a "get" request is sent.
+  For example, will gather from all the sensors and pass that to comp using serial por
+  */
+ delay(1120);
+ Serial.println("This is a get request"); 
+}
+
 void loop() {
+/*
   for(int i=1; i<16; i++){
     Serial.println(i);
-    /*
-    String stringRep = String(i); 
-    Serial.println(stringRep[0]);
-    delay(100);  
-    */
     selectLine(i); 
     Serial.print(digitalRead(control3)); 
     Serial.print(digitalRead(control2)); 
@@ -39,20 +71,12 @@ void loop() {
     Serial.println(); 
     delay(1000);  
   }
+*/
   
-  /*
-  Serial.println((value>>n) & 1
-  
-  // checks for if anything needs to be done 
-  if (Serial.available() > 0){
-    request_status = Serial.read();
-    if (request_status == 1111){
-      // TODO: get sensor data
-    }else if (request_status == 0000){
-      // TODO: activate actuators
-    }
+  while (Serial.available() > 0){
+    listenForRequest();
   }
-  */
+  
 }
 
 
