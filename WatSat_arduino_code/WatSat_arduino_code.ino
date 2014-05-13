@@ -31,11 +31,32 @@ void setup() {
 void listenForRequest(){
   req = Serial.read();
   
-  if (req){
-    Serial.println(req); 
+  if (req == 'g'){
+    getRequest();
+  }else if (req == 'p'){
+    postRequest();
   }else{
+    Serial.println(req);
     Serial.println("No Data Recieved");
   }
+}
+
+void postRequest(){
+  /*
+  What to do when a "post" request is sent.
+  For example, will post the voltage required to apply to magentorquers
+  */
+  delay(1120);
+  Serial.println("This is a post request");
+}
+
+void getRequest(){
+  /*
+  What to do when a "get" request is sent.
+  For example, will gather from all the sensors and pass that to comp using serial por
+  */
+ delay(1120);
+ Serial.println("This is a get request"); 
 }
 
 void loop() {
