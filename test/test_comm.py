@@ -1,7 +1,6 @@
 """
 integration test for arduino
     NOTE: requires the arduino to be plugged in
-    TODO: add docopt to make testing more easy...
 """
 
 import unittest
