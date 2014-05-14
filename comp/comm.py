@@ -17,20 +17,34 @@ class ADCSArduino():
         # call control algorithm
         pass
 
+    def open_port(self):
+        # opens the serial port if it is not already open
+        if self.arduino.isOpen():
+            return
+        else:
+            self.arduino.open()
+
+    def close_port(self):
+        # closes the serial port if it not already closed
+        if self.arduino.isOpen():
+            self.arduino.close()
+        else:
+            return
+
     def activate(self):
         # starts up the adcs arduino for buisness
         # changes the attitude of the satellite to the desired pos and
         # then returns the attitude when it has finished
         #
         # call this method from the event queue 
-        self.arduino.open()
-        
+        self.open_port()
+
         data = self.get_sensor_data()
         self.call_control(data)
         sleep(1) 
         self.post_change('placeholder')
         
-        self.arduino.close()
+        self.close_port()
     
     def _prep_request(self, typ):
         # tells the arduino when we want to send/recieve data so
