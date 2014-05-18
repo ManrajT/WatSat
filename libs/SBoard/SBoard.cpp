@@ -12,5 +12,5 @@
 
 SBoard::SBoard()
 {
-    int control_lines[] = {}; 
+    int access[0] = {}; 
 }
