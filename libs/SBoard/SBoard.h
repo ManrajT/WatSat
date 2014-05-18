@@ -26,7 +26,8 @@ class SBoard
     private:
         Data dat;
         int access[];
-        
+        void correctForTemp();
+        int getPhotodiodeAverage();
 };
 
 #endif
