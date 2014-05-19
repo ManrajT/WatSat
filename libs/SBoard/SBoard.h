@@ -4,12 +4,22 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+struct Sensor
+{
+    float val;
+    int loc;
+};
+
 struct Data
 {
-    float pd0;      // first photodiode
-    float pd1;      // second photodiode
+    Sensor pd0;      // first photodiode
+    Sensor pd1;      // second photodiode
     float pda;      // photodiode average
-    float tmp;      // temperature
+    Sensor tmp;      // temperature
+    Sensor mxm;
+    Sensor mxd;
+    Sensor mym;
+    Sensor myd;
     float ax;       // mangetometer x-axis
     float ay;       // magnetometer y-axis
 };
@@ -18,16 +28,19 @@ class SBoard
 {
     public:
         SBoard();
-        SBoard(int acc[]);
+        SBoard(Sensor pd0, Sensor pd1, Sensor tmp, 
+                Sensor mx_m, Sensor mx_d, Sensor my_m, 
+                Sensor my_d);
         
-        void fillDat(float pd0, float pd1, float pda, float tmp, float ax, float ay);
+        void selectPDs();
+        void selectTmp();
+        void selectMag();
         void sendData();
 
     private:
         Data dat;
-        int access[];
-        void correctForTemp();
-        int getPhotodiodeAverage();
+        float correctForTemp();
+        float setPhotodiodeAverage();
 };
 
 #endif
