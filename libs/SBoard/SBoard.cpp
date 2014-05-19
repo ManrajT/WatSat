@@ -1,7 +1,7 @@
 /*
- May 17, 2014
- 
- A module to model the watsat adcs board that consists of 
+   May 17, 2014
+
+   A module to model the watsat adcs board that consists of 
     - 2 photodiodes
     - a temperature sensor
     - a double axis magnetometer
@@ -15,7 +15,9 @@ SBoard::SBoard()
 
 }
 
-SBoard::SBoard(Sensor pd0, Sensor pd1, Sensor tmp, Sensor mxm, Sensor mxd, Sensor mym, Sensor myd)
+SBoard::SBoard(Sensor pd0, Sensor pd1, Sensor tmp, 
+    Sensor mxm, Sensor mxd, Sensor mym, Sensor myd, 
+    int ct0, int ct1, int ct2, int ct3)
 {
     dat.pd0 = pd0;
     dat.pd1 = pd1;
@@ -24,6 +26,16 @@ SBoard::SBoard(Sensor pd0, Sensor pd1, Sensor tmp, Sensor mxm, Sensor mxd, Senso
     dat.mxd = mxd;
     dat.mym = mym;
     dat.myd = myd;
+
+    ctrl0 = ct0;
+    ctrl1 = ct1;
+    ctrl2 = ct2;
+    ctrl3 = ct3;
+
+    pinMode(ct0, OUTPUT);
+    pinMode(ct1, OUTPUT);
+    pinMode(ct2, OUTPUT);
+    pinMode(ct3, OUTPUT);
 }
 
 float SBoard::correctForTemp()
@@ -47,4 +59,17 @@ float SBoard::setPhotodiodeAverage()
 
     dat.pda = (dat.pd0.val + dat.pd1.val)/2;
     return dat.pda;
+}
+
+void SBoard::setPinmodeActive(int cmd)
+{
+    digitalWrite(ctrl0, cmd/1000);
+    digitalWrite(ctrl1, (cmd/100)-10);
+    digitalWrite(ctrl2, (cmd%100)/10);
+    digitalWrite(ctrl3, cmd);
+}
+
+void SBoard::selectPDs()
+{
+    
 }

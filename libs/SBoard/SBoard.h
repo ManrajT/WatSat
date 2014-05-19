@@ -30,7 +30,7 @@ class SBoard
         SBoard();
         SBoard(Sensor pd0, Sensor pd1, Sensor tmp, 
                 Sensor mx_m, Sensor mx_d, Sensor my_m, 
-                Sensor my_d);
+                Sensor my_d, int ct0, int ct1, int ct2, int ct3);
         
         void selectPDs();
         void selectTmp();
@@ -38,9 +38,14 @@ class SBoard
         void sendData();
 
     private:
+        int ctrl0;
+        int ctrl1;
+        int ctrl2;
+        int ctrl3;
         Data dat;
         float correctForTemp();
         float setPhotodiodeAverage();
+        void setPinmodeActive(int cmd);
 };
 
 #endif
