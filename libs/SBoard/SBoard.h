@@ -32,19 +32,19 @@ class SBoard
                 Sensor mx_m, Sensor mx_d, Sensor my_m, 
                 Sensor my_d, int ct0, int ct1, int ct2, int ct3);
         
-        void selectPDs();
-        void selectTmp();
-        void selectMag();
-        void sendData();
+        void readData(int in);
+        Data sendData();
 
     private:
         int ctrl0;
         int ctrl1;
         int ctrl2;
         int ctrl3;
+        String dataStr;
         Data dat;
         float correctForTemp();
         float setPhotodiodeAverage();
+        float setMagVals();
         void setPinmodeActive(int cmd);
 };
 

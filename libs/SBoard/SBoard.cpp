@@ -61,15 +61,55 @@ float SBoard::setPhotodiodeAverage()
     return dat.pda;
 }
 
+float SBoard::setMagVals()
+{
+    if (!(dat.mxm.val) || !(dat.mxd.val) || 
+        !(dat.mym.val) || !(dat.myd.val))
+    {
+        return -1;
+    }
+
+    dat.ax = dat.mxm.val - dat.mxd.val;
+    dat.ay = dat.mym.val - dat.myd.val;
+}
+
 void SBoard::setPinmodeActive(int cmd)
 {
     digitalWrite(ctrl0, cmd/1000);
-    digitalWrite(ctrl1, (cmd/100)-10);
-    digitalWrite(ctrl2, (cmd%100)/10);
-    digitalWrite(ctrl3, cmd);
+    digitalWrite(ctrl1, (cmd%1000)/100);
+    digitalWrite(ctrl2, ((cmd%1000)%100)/10);
+    digitalWrite(ctrl3, (((cmd%1000)%100)%10));
 }
 
-void SBoard::selectPDs()
+void SBoard::readData(int in)
 {
+    setPinmodeActive(dat.pd0.loc);
+    dat.pd0.val = analogRead(in);   
     
+    setPinmodeActive(dat.pd1.loc);
+    dat.pd1.val = analogRead(in);    
+    
+    setPinmodeActive(dat.tmp.loc);
+    dat.tmp.val = analogRead(in);    
+    
+    setPinmodeActive(dat.mxm.loc);
+    dat.mxm.val = analogRead(in);    
+    
+    setPinmodeActive(dat.mxd.loc);
+    dat.mxd.val = analogRead(in);    
+    
+    setPinmodeActive(dat.mym.loc);
+    dat.mym.val = analogRead(in);    
+    
+    setPinmodeActive(dat.myd.loc);
+    dat.myd.val = analogRead(in);    
+
+    correctForTemp();
+    setPhotodiodeAverage();
+    setMagVals();
+}
+
+Data SBoard::sendData()
+{
+    return dat;
 }
