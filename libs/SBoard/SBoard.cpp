@@ -32,10 +32,12 @@ SBoard::SBoard(Sensor pd0, Sensor pd1, Sensor tmp,
     ctrl2 = ct2;
     ctrl3 = ct3;
 
+/*
     pinMode(ct0, OUTPUT);
     pinMode(ct1, OUTPUT);
     pinMode(ct2, OUTPUT);
     pinMode(ct3, OUTPUT);
+*/
 }
 
 float SBoard::correctForTemp()
@@ -81,7 +83,7 @@ void SBoard::setPinmodeActive(int cmd)
     digitalWrite(ctrl3, (((cmd%1000)%100)%10));
 }
 
-void SBoard::readData(int in)
+Data SBoard::readData(int in)
 {
     setPinmodeActive(dat.pd0.loc);
     dat.pd0.val = analogRead(in);   
@@ -107,6 +109,8 @@ void SBoard::readData(int in)
     correctForTemp();
     setPhotodiodeAverage();
     setMagVals();
+
+    return dat;
 }
 
 Data SBoard::sendData()

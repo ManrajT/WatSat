@@ -32,7 +32,7 @@ class SBoard
                 Sensor mx_m, Sensor mx_d, Sensor my_m, 
                 Sensor my_d, int ct0, int ct1, int ct2, int ct3);
         
-        void readData(int in);
+        Data readData(int in);
         Data sendData();
 
     private:
