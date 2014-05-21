@@ -9,7 +9,7 @@ from comp.comm import ADCSArduino
 class TestComm(unittest.TestCase):
     
     def setUp(self):
-        self.ar = ADCSArduino()
+        self.ar = ADCSArduino(pr="/dev/ttyACM1")
 
     def tearDown(self):
         self.ar.close_port()
@@ -21,6 +21,7 @@ class TestComm(unittest.TestCase):
     def test_get_sensor_data(self):
         self.ar.open_port()
         data = self.ar.get_sensor_data()
+        print data
         # TODO: make this more representative of what the output 
         # should be, fix it in general
         self.assertIsNotNone(data)
