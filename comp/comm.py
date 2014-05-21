@@ -2,6 +2,7 @@
 
 import serial
 from time import sleep
+import re
 
 class RequestError(Exception): pass
 
@@ -61,14 +62,38 @@ class ADCSArduino():
         else:
             raise RequestError('invalid request type')
 
+    # TODO: process serial string (see next line)
+    # 0{photodiodes:417.60; mag_x:-3.00; mag_y: -3.00;}1{photodiodes:405.10; mag_x:-2.00; mag_y: -1.00;}\n
+    def gen_dict(self, string):
+        data = {}
+        sens = string.split('}')    # gets all elements
+        sens.pop()                  # removes \n
+            
+        # required regexs
+        preg = re.compile('photodiodes:[-0-9][^;]*')
+        mxreg = re.compile('mag_x:[-0-9][^;]*')
+        myreg = re.compile('mag_x:[-0-9][^;]*')
+
+        for i in sens:
+            on = re.search('[0-9]', i).group()
+            p = re.search(preg, i).group().split(':')[1]
+            mx = re.search(mxreg, i).group().split(':')[1]
+            my = re.search(myreg, i).group().split(':')[1]
+
+            data[on] = {}
+            data[on]['photodiodes'] = float(p)
+            data[on]['mag_x'] = float(mx)
+            data[on]['mag_y'] = float(my)
+
+        return data
+
     def get_sensor_data(self):
         # gets sensor data
-        # TODO: processing
-        #   return : dict, the sensor data
         self._prep_request('get')
         sleep(1)
-        data = self.arduino.readline()           
-        print "output from serial: %s"%(data)
+        data = self.arduino.readline()
+        data = self.gen_dict(data)
+        #print "output from serial: %s"%(data)
         return data
 
     def post_change(self, dat):
@@ -76,5 +101,5 @@ class ADCSArduino():
         #   param : dat : tuple, the desired change
         self._prep_request('post')             
         sleep(1)
-        print "output from serial: %s"%(self.arduino.readline())
+        #print "output from serial: %s"%(self.arduino.readline())
         #self.arduino.write(str(dat))
