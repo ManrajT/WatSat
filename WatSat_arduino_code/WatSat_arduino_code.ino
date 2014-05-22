@@ -5,17 +5,23 @@ high pwm means low voltage
 low pwm means high voltage
 */
 
-//All code is using variables, which can change
-//Figure out how data for magnetometers have to be handled (photodiodes and temp are just default
-
 int NUM_BOARDS = 6;
+
+// output pins for controlling the mux
 int control0 = 2;
 int control1 = 3;
 int control2 = 4;
 int control3 = 5;
 
+// input pins for reading the mux
 int in0 = 0;
 int in1 = 1;
+
+// output pins for controlling the magnetorquers
+int torx = 6;
+int tory = 7;
+int torz = 8;
+int torred = 9;
 
 SBoard boards[6];
 Data d0;
@@ -30,6 +36,14 @@ void setup() {
   pinMode(control1, OUTPUT); 
   pinMode(control2, OUTPUT); 
   pinMode(control3, OUTPUT); 
+  
+  pinMode(in0, INPUT);
+  pinMode(in1, INPUT);
+  
+  pinMode(torx, OUTPUT); 
+  pinMode(tory, OUTPUT); 
+  pinMode(torz, OUTPUT); 
+  pinMode(torred, OUTPUT); 
   
   Serial.println("Started serial");
   init_stuff();
@@ -58,8 +72,8 @@ void postRequest(){
   For example, will post the voltage required to apply to magentorquers
   */
   delay(100);
-  float a = Serial.parseFloat()
-  Serial.println(a);
+  float a = Serial.parseFloat();
+  adjust(a);
 }
 
 void getRequest(){
@@ -97,6 +111,7 @@ void init_stuff()
 }
 
 void readall(){
+  // SOLDERING NOTE: MAKE SURE TO LINE UP OUTPUTS!!
   for (int i=0; i<(NUM_BOARDS/2); i++){
     master[i] = boards[i].readData(in0);
     master[i+1] = boards[i+1].readData(in1);
@@ -117,3 +132,23 @@ void outputall(){
   Serial.print("\n");
 }
 
+void adjust(float mag){
+ /* the value of mag will depend on the voltage required to be applied to the 
+    magnetorquers.
+      torquer | key
+      --------+--------
+        x     | mag 
+        y     | mag + 100
+        z     | mag + 200
+       red    | mag + 300
+  */
+  if (mag >= 300){
+    analogWrite(torred, (mag-300));
+  }else if (mag >= 200){
+    analogWrite(torz, (mag-200));
+  }else if (mag >= 100){
+    analogWrite(tory, (mag-100));
+  }else{
+    analogWrite(torx, mag);
+  }
+}
