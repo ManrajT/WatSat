@@ -43,7 +43,8 @@ class ADCSArduino():
         data = self.get_sensor_data()
         self.call_control(data)
         sleep(1) 
-        self.post_change('placeholder')
+        # TODO: get val to change - will probably be put in control alg.
+        self.post_change(4)
         
         self.close_port()
     
@@ -63,7 +64,6 @@ class ADCSArduino():
             raise RequestError('invalid request type')
 
     # TODO: process serial string (see next line)
-    # 0{photodiodes:417.60; mag_x:-3.00; mag_y: -3.00;}1{photodiodes:405.10; mag_x:-2.00; mag_y: -1.00;}\n
     def gen_dict(self, string):
         data = {}
         sens = string.split('}')    # gets all elements
@@ -93,13 +93,13 @@ class ADCSArduino():
         sleep(1)
         data = self.arduino.readline()
         data = self.gen_dict(data)
-        #print "output from serial: %s"%(data)
         return data
 
     def post_change(self, dat):
         # posts needed change to the arduino
         #   param : dat : tuple, the desired change
         self._prep_request('post')             
-        sleep(1)
-        #print "output from serial: %s"%(self.arduino.readline())
-        #self.arduino.write(str(dat))
+        self.arduino.write(str(dat))
+        # next two lines are for testing
+        #d = self.arduino.readline()
+        #print d
