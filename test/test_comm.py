@@ -9,7 +9,7 @@ from comp.comm import ADCSArduino
 class TestComm(unittest.TestCase):
     
     def setUp(self):
-        self.ar = ADCSArduino(pr="/dev/ttyACM1")
+        self.ar = ADCSArduino(pr="/dev/ttyACM0")
 
     def tearDown(self):
         self.ar.close_port()
@@ -22,15 +22,20 @@ class TestComm(unittest.TestCase):
         self.ar.open_port()
         data = self.ar.get_sensor_data()
         print data
-        # TODO: make this more representative of what the output 
-        # should be, fix it in general
         self.assertIsNotNone(data)
+        self.ar.close_port()
+
+    def test_cont_sample(self):
+        self.ar.open_port()
+        for i in range (5):
+            data = self.ar.get_sensor_data()
+            print data
+            self.assertIsNotNone(data)
         self.ar.close_port()
 
     def test_post_change(self):
         self.ar.open_port()
-        da = "placeholder"
-        self.ar.post_change(da)
+        self.ar.post_change(7)
         self.ar.close_port()
 
     def test_workflow(self):
