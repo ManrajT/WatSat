@@ -1,11 +1,12 @@
 #include <Wire.h>
 #include <SBoard.h>
+#include <HMC5883L.h>
 /*
 high pwm means low voltage
 low pwm means high voltage
 */
 
-int NUM_BOARDS = 6;
+const int NUM_BOARDS = 6;
 
 // output pins for controlling the mux
 int control0 = 2;
@@ -23,9 +24,8 @@ int tory = 7;
 int torz = 8;
 int torred = 9;
 
-SBoard boards[6];
-Data d0;
-Data master [6];
+SBoard boards[NUM_BOARDS];
+Data master [NUM_BOARDS];
 
 char req;
 
@@ -73,6 +73,7 @@ void postRequest(){
   */
   delay(100);
   float a = Serial.parseFloat();
+  Serial.println(a);
   adjust(a);
 }
 
@@ -87,25 +88,35 @@ void getRequest(){
 
 void init_stuff()
 {
-  // TODO: define all the sensors/boards
-  Sensor p0 = {0, 0000};
-  Sensor p1 = {0, 0001};
-  Sensor tmp = {0, 0010};
-  Sensor mxm = {0, 0011};
-  Sensor mxd = {0, 0100};
-  Sensor mym = {0, 0101};
-  Sensor myd = {0, 0110};
+  // Defines all the sensors attached to the first mux
+  Sensor p0 = {0, 0000, in0}, p01 = {0, 0111, in0}, p02 = {0, 1110, in0};
+  Sensor p1 = {0, 0001, in0}, p11 = {0, 1000, in0}, p12 = {0, 1111, in0};
+  Sensor tmp = {0, 0010, in0}, tmp1 = {0, 1001, in0};
+  Sensor mxm = {0, 0011, in0}, mxm1 = {0, 1010, in0};
+  Sensor mxd = {0, 0100, in0}, mxd1 = {0, 1011, in0};
+  Sensor mym = {0, 0101, in0}, mym1 = {0, 1100, in0};
+  Sensor myd = {0, 0110, in0}, myd1 = {0, 1101, in0};
+
+  // Defines all the sensors attached to the second mux
+  Sensor tmp2 = {0, 0000, in1}, tmp3 = {0, 0111, in1}, tmp4 = {0, 1110, in1};
+  Sensor mxm2 = {0, 0001, in1}, p15 = {0, 1000, in1}, p05 = {0, 1111, in1};
+  Sensor mxd2 = {0, 0010, in1}, tmp5 = {0, 1001, in1};
+  Sensor mym2 = {0, 0011, in1};
+  Sensor myd2 = {0, 0100, in1};
+  Sensor p03 = {0, 0101, in1}, p04 = {0, 1100, in1};
+  Sensor p13 = {0, 0110, in1}, p14 = {0, 1101, in1};
+  
   boards[0] = SBoard(p0, p1, tmp, mxm, mxd, mym, myd, 
     control0, control1, control2, control3);
-  boards[1] = SBoard(p0, p1, tmp, mxm, mxd, mym, myd, 
+  boards[1] = SBoard(p01, p11, tmp1, mxm1, mxd1, mym1, myd1, 
     control0, control1, control2, control3);
-  boards[2] = SBoard(p0, p1, tmp, mxm, mxd, mym, myd, 
+  boards[2] = SBoard(p02, p12, tmp2, mxm2, mxd2, mym2, myd2, 
     control0, control1, control2, control3);
-  boards[3] = SBoard(p0, p1, tmp, mxm, mxd, mym, myd, 
+  boards[3] = SBoard(p03, p13, tmp3, 
     control0, control1, control2, control3);
-  boards[4] = SBoard(p0, p1, tmp, mxm, mxd, mym, myd, 
+  boards[4] = SBoard(p04, p14, tmp4, 
     control0, control1, control2, control3);
-  boards[5] = SBoard(p0, p1, tmp, mxm, mxd, mym, myd, 
+  boards[5] = SBoard(p05, p15, tmp5, 
     control0, control1, control2, control3);
     
 }
@@ -113,10 +124,12 @@ void init_stuff()
 void readall(){
   // SOLDERING NOTE: MAKE SURE TO LINE UP OUTPUTS!!
   // can fix this by giving a board another var that describes it's input pin
-  for (int i=0; i<(NUM_BOARDS/2); i++){
-    master[i] = boards[i].readData(in0);
-    master[i+1] = boards[i+1].readData(in1);
-  }
+  master[0] = boards[0].readData();
+  master[1] = boards[1].readData();
+  master[2] = boards[2].readData();
+  master[3] = boards[3].readMinData();
+  master[4] = boards[4].readMinData();
+  master[5] = boards[5].readMinData();
 }
 
 void outputall(){
