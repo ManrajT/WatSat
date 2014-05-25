@@ -64,9 +64,9 @@ class ADCSArduino():
             raise RequestError('invalid request type')
 
     # TODO: process serial string (see next line)
-    def gen_dict(self, string):
+    def gen_dict(self, ard, imu):
         data = {}
-        sens = string.split('}')    # gets all elements
+        sens = ard.split('}')    # gets all elements
         sens.pop()                  # removes \n
             
         # required regexs
@@ -87,12 +87,16 @@ class ADCSArduino():
 
         return data
 
+    def _get_imu_data(self):
+        return 0
+
     def get_sensor_data(self):
         # gets sensor data
         self._prep_request('get')
         sleep(1)
         data = self.arduino.readline()
-        data = self.gen_dict(data)
+        imu = self._get_imu_data()
+        data = self.gen_dict(data, imu)
         return data
 
     def post_change(self, dat):
