@@ -9,38 +9,50 @@ from comp.comm import ADCSArduino
 class TestComm(unittest.TestCase):
     
     def setUp(self):
-        self.ar = ADCSArduino(pra="/dev/ttyACM0")
+        self.imu = ADCSArduino(pri="/dev/ttyUSB0")
 
     def tearDown(self):
-        self.ar.close_arduino_port()
+        self.imu.close_imu_port()
 
-    def test_activate(self):
-        self.ar.activate()
-        self.assertEqual(self.ar.arduino.isOpen(), False)
+#    def test_activate(self):
+#        self.ar.activate()
+#        self.assertEqual(self.ar.arduino.isOpen(), False)
 
-    def test_get_sensor_data(self):
-        self.ar.open_arduino_port()
-        data = self.ar.get_sensor_data()
-        print data
-        self.assertIsNotNone(data)
-        self.ar.close_arduino_port()
+#    def test_get_sensor_data(self):
+#        self.ar.open_arduino_port()
+#        data = self.ar.get_sensor_data()
+#        print data
+#        self.assertIsNotNone(data)
+#        self.ar.close_arduino_port()
 
-    def test_cont_sample(self):
-        self.ar.open_arduino_port()
-        for i in range (5):
-            data = self.ar.get_sensor_data()
-            print data
-            self.assertIsNotNone(data)
-        self.ar.close_arduino_port()
+#    def test_cont_sample(self):
+#        self.ar.open_arduino_port()
+#        for i in range (5):
+#            data = self.ar.get_sensor_data()
+#            print data
+#            self.assertIsNotNone(data)
+#        self.ar.close_arduino_port()
 
-    def test_post_change(self):
-        self.ar.open_arduino_port()
-        self.ar.post_change(7)
-        self.ar.close_arduino_port()
+#    def test_post_change(self):
+#        self.ar.open_arduino_port()
+#        self.ar.post_change(7)
+#        self.ar.close_arduino_port()
 
-    def test_workflow(self):
+#    def test_workflow(self):
         # TODO: test full workflow
-        pass
+#        pass
+    
+    def test_open(self):
+        # opens up the port to the imu and makes sure that 
+        # communication can in fact happen
+        self.imu.open_imu_port()
+        self.imu.assertEqual(self.imu.isOpen, True)
+    
+    def test_get_imu_dat(self):
+        # asks for data from the imu and ensures that we recieve
+        # something   
+        da = self.imu._get_imu_data()
+        self.assertNotNone(da)
 
 if __name__ == "__main__":
     unittest.main()
