@@ -8,27 +8,47 @@ class RequestError(Exception): pass
 
 class ADCSArduino():
 
-    def __init__(self, pr='/dev/ttyACM0', br=9600):
+    def __init__(self, pra='/dev/ttyACM0', bra=9600, 
+        pri='/dev/ttyUSB0', bri=9600):
+        # per le arduino
         self.arduino = serial.Serial()
-        self.arduino.port = pr
-        self.arduino.baudrate = br
+        self.arduino.port = pra
+        self.arduino.baudrate = bra
+        # per le imu
+        self.imu = serial.Serial()
+        self.imu.port = pri
+        self.imu.bri = bri
         # calibration algorithm
 
     def call_control(self, data):
         # call control algorithm
         pass
 
-    def open_port(self):
+    def open_arduino_port(self):
         # opens the serial port if it is not already open
         if self.arduino.isOpen():
             return
         else:
             self.arduino.open()
 
-    def close_port(self):
+    def close_arduino_port(self):
         # closes the serial port if it not already closed
         if self.arduino.isOpen():
             self.arduino.close()
+        else:
+            return
+
+    def open_imu_port(self):
+        # opens the serial port if it is not already open
+        if self.imu.isOpen():
+            return
+        else:
+            self.imu.open()
+
+    def close_imu_port(self):
+        # closes the serial port if it not already closed
+        if self.imu.isOpen():
+            self.imu.close()
         else:
             return
 
@@ -38,16 +58,12 @@ class ADCSArduino():
         # then returns the attitude when it has finished
         #
         # call this method from the event queue 
-        self.open_port()
-
         data = self.get_sensor_data()
         self.call_control(data)
         sleep(1) 
-        # TODO: get val to change - will probably be put in control alg.
+        # TODO: get val to change-will probably be put in control alg
         self.post_change(4)
         
-        self.close_port()
-    
     def _prep_request(self, typ):
         # tells the arduino when we want to send/recieve data so
         # that the arduino does not have to take continous sensor
@@ -64,9 +80,9 @@ class ADCSArduino():
             raise RequestError('invalid request type')
 
     # TODO: process serial string (see next line)
-    def gen_dict(self, string):
+    def gen_dict(self, ard, imu):
         data = {}
-        sens = string.split('}')    # gets all elements
+        sens = ard.split('}')    # gets all elements
         sens.pop()                  # removes \n
             
         # required regexs
@@ -85,21 +101,41 @@ class ADCSArduino():
             data[on]['mag_x'] = float(mx)
             data[on]['mag_y'] = float(my)
 
+        st1 = imu.split('=')[1].strip()
+        st2 = st1.split(',')
+        data['imu'] = {
+            'Y': st2[0],
+            'P': st1[1],
+            'R': st1[2]
+        }
+       
         return data
+
+    def _get_imu_data(self):
+        dat = self.imu.readline()
+        return dat
 
     def get_sensor_data(self):
         # gets sensor data
+        self.open_arduino_port()
         self._prep_request('get')
         sleep(1)
         data = self.arduino.readline()
-        data = self.gen_dict(data)
+        self.close_arduino_port()
+
+        self.open_imu_port()
+        imu = self._get_imu_data()
+        self.close_imu_port()
+        data = self.gen_dict(data, imu)
         return data
 
     def post_change(self, dat):
         # posts needed change to the arduino
         #   param : dat : tuple, the desired change
+        self.open_arduino_port()
         self._prep_request('post')             
         self.arduino.write(str(dat))
+        self.close_arduino_port()
         # next two lines are for testing
         #d = self.arduino.readline()
         #print d
