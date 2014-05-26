@@ -46,7 +46,7 @@ class TestComm(unittest.TestCase):
         # opens up the port to the imu and makes sure that 
         # communication can in fact happen
         self.imu.open_imu_port()
-        self.imu.assertEqual(self.imu.isOpen, True)
+        self.assertEqual(self.imu.isOpen, True)
     
     def test_get_imu_dat(self):
         # asks for data from the imu and ensures that we recieve
