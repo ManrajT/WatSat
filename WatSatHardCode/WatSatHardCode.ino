@@ -138,9 +138,9 @@ void outputall(){
     Serial.print("{photodiodes:");
     Serial.print(master[i].pda);
     Serial.print("; mag_x:");
-    Serial.print(master[i].ax);
+    Serial.print(0);
     Serial.print("; mag_y:");
-    Serial.print(master[i].ay);
+    Serial.print(0);
     Serial.print(";}"); 
   }
   Serial.print("\n");
