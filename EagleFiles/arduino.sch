@@ -2629,9 +2629,9 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <net name="N$5" class="0">
 <segment>
 <pinref part="IC2" gate="A" pin="W"/>
-<wire x1="195.58" y1="45.72" x2="195.58" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="(PCI17/TXD)PD1"/>
-<wire x1="119.38" y1="71.12" x2="195.58" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="45.72" x2="195.58" y2="60.96" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="G$1" pin="(PCI21/T1/OC0B)PD5"/>
+<wire x1="119.38" y1="60.96" x2="195.58" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -2927,9 +2927,9 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <segment>
 <pinref part="IC4" gate="A" pin="W"/>
 <wire x1="198.12" y1="-104.14" x2="149.86" y2="-104.14" width="0.1524" layer="91"/>
-<wire x1="149.86" y1="-104.14" x2="149.86" y2="73.66" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="(PCI16/RXD)PD0"/>
-<wire x1="149.86" y1="73.66" x2="119.38" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="-104.14" x2="149.86" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="G$1" pin="(PCI22/AIN0OC0A)PD6"/>
+<wire x1="119.38" y1="58.42" x2="149.86" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$46" class="0">
