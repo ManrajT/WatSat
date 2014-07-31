@@ -28,6 +28,8 @@ Data d0;
 Data master [6];
 
 char req;
+boolean txD = false;    // flag for tx complete
+boolean rxD = false;    // flag for rx complete
 
 void setup() {
   Serial.begin(9600);
@@ -51,7 +53,10 @@ void setup() {
 
 void loop() {
   while (Serial.available() > 0){
-    listenForRequest();
+    if (rxD){                  // rx transfer is complete
+      listenForRequest();    // execute the stuff
+      rxD = false;           // reset rxD flag
+    }
   }
   
 }
@@ -153,3 +158,15 @@ void adjust(float mag){
     analogWrite(torx, mag);
   }
 }
+
+// interrupt for USART Rx complete
+ISR(USART_RX_vect){
+  rxD = true;
+}
+
+/*
+// interrupt for the USART Tx complete
+ISR(USART_TX_vect){
+ 
+} 
+*/
