@@ -9,7 +9,7 @@ from comp.comm import ADCSArduino
 class TestComm(unittest.TestCase):
     
     def setUp(self):
-        self.ard = ADCSArduino(pr="/dev/ttyUSB0")
+        self.ard = ADCSArduino(pr="/dev/ttyACM0")
 
     def tearDown(self):
         self.ard.close_arduino_port()

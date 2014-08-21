@@ -9,10 +9,10 @@ class RequestError(Exception): pass
 class ADCSArduino():
 
     # decorator function that opens and closes port and does stuff
-    def open_close_port(function):
-        def open_close(self):
+    def open_close_port(function, *args):
+        def open_close(self, *args):
             self.open_arduino_port()
-            function(self)
+            function(self, *args)
             self.close_arduino_port()
         return open_close
 
@@ -108,6 +108,3 @@ class ADCSArduino():
         #   param : dat : tuple, the desired change
         self._prep_request('post')             
         self.arduino.write(str(dat))
-        # next two lines are for testing
-        #d = self.arduino.readline()
-        #print d

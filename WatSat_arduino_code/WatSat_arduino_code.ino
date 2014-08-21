@@ -114,8 +114,8 @@ void readall(){
   // SOLDERING NOTE: MAKE SURE TO LINE UP OUTPUTS!!
   // can fix this by giving a board another var that describes it's input pin
   for (int i=0; i<(NUM_BOARDS/2); i++){
-    master[i] = boards[i].readData(in0);
-    master[i+1] = boards[i+1].readData(in1);
+    master[i] = boards[i].readData();
+    master[i+1] = boards[i+1].readData();
   }
 }
 
