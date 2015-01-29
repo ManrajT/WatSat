@@ -92,14 +92,14 @@ class ADCSArduino():
 
         return data
 
-    @open_close_port
     def get_sensor_data(self):
-        # gets sensor data
+        self.open_arduino_port() 
         self._prep_request('get')
         sleep(1)
         # I changed this without checking
-        data = self.gen_dict(self.arduino.readline())
-        
+        return self.gen_dict(self.arduino.readline())
+        print(data) 
+        self.close_arduino_post()
         return data
 
     @open_close_port
